@@ -157,7 +157,7 @@ public class PornhubCrawler extends AbstractCrawler{
 				String title = li.selectFirst("div.category-wrapper > h5 > a").attr("data-mxptext");
 				result.put(title, href);
 				log.info("分类:{},地址:{}", title, href);
-				if(result.size() > 3)break;//只获取3个
+				if(result.size() > 2)break;//只获取3个
 			}
 		} catch (IOException e) {
 			log.error("获取分类错误:",e);

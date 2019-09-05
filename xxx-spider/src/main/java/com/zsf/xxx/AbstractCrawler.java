@@ -42,7 +42,7 @@ public abstract class AbstractCrawler {
 				List<String> videoUrls = getVideoUrls(viewUrls);
 				log.info("获取所有[{}]视频地址成功:{}", title, videoUrls);
 
-				String downloadFileName = dir + File.separatorChar + "/download_" + title + ".txt";
+				String downloadFileName = dir + File.separatorChar + "download_" + title + ".txt";
 				FileUtils.writeLines(new File(downloadFileName), videoUrls, false);
 			}
 		}
