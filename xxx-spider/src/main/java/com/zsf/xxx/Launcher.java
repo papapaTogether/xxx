@@ -25,11 +25,12 @@ public class Launcher {
 			log.info(StringUtils.join(lines,"\r\n"));			
 		}
 		log.info("爬虫开始");
-		String fileDir = "/Users/zsf/git/xvidoes/mp4";//默认文件保存目录
+		String fileDir = System.getProperty("java.io.tmpdir");//默认文件保存目录
 		if(args != null && args.length > 0){
 			fileDir = args[0];
 		}
-		new PornhubCrawler().execute(fileDir);
+		log.info("视频地址文件保存在:{}",fileDir);
+		//new PornhubCrawler().execute(fileDir);
 		new XvideosCrawler().execute(fileDir);
 		log.info("爬虫停止");
 	}

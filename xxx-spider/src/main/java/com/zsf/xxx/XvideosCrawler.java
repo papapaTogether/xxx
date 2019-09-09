@@ -51,7 +51,7 @@ public class XvideosCrawler extends AbstractCrawler{
 				}
 			}
 		} catch (IOException e) {
-			log.error("获取视频地址错误:[" + videoUrl + "]", e);
+			log.error("获取视频地址错误:[" + viewUrl + "]", e);
 		}
 
 		return videoUrl;
@@ -120,9 +120,9 @@ public class XvideosCrawler extends AbstractCrawler{
 	@Override
 	public Map<String, String> getCategories() {
 		Map<String,String> categories = new HashMap<>();
-		categories.put("丝袜","/c/Stockings-28");
-		categories.put("喷水","/c/Squirting-56");
-		categories.put("女同","?k=lesbian");
+		categories.put("丝袜",BASE_URL+"/c/Stockings-28");
+		categories.put("喷水",BASE_URL+"/c/Squirting-56");
+		categories.put("女同",BASE_URL+"/?k=lesbian");
 
 		return categories;
 	}

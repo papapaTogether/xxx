@@ -17,17 +17,11 @@ import org.slf4j.LoggerFactory;
  * @author papapa
  *
  */
-public abstract class AbstractCrawler {
+public abstract class AbstractCrawler implements Crawler{
 
 	private static final Logger log = LoggerFactory.getLogger(AbstractCrawler.class);
 
-	/**
-	 * 爬虫入口
-	 * 
-	 * @param dir
-	 *            文件保存目录
-	 * @throws IOException
-	 */
+	@Override
 	public void execute(String dir) throws IOException {
 		if (StringUtils.isBlank(dir)) {
 			throw new IOException("文件保存目录为空");
@@ -44,33 +38,10 @@ public abstract class AbstractCrawler {
 
 				String downloadFileName = dir + File.separatorChar + "download_" + title + ".txt";
 				FileUtils.writeLines(new File(downloadFileName), videoUrls, false);
+				log.info("[{}]视频链接保存在{}",title,downloadFileName);
 			}
 		}
 	}
-
-	/**
-	 * 获取分类集合
-	 * 
-	 * @return
-	 */
-	abstract Map<String, String> getCategories();
-
-	/**
-	 * 获取视频地址
-	 * 
-	 * @param href
-	 * @return
-	 */
-	abstract List<String> getViewUrls(String href);
-
-	/**
-	 * 获取视频高清地址
-	 * 
-	 * @param viewUrl
-	 * @return
-	 * @throws IOException
-	 */
-	abstract String getVideoUrl(String viewUrl);
 
 	public List<String> getVideoUrls(List<String> viewUrls) {
 		List<String> videoUrls = new ArrayList<>();
