@@ -1,5 +1,6 @@
 package com.zsf.xxx;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +13,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.zsf.xxx.http.HttpViewer;
+import com.zsf.xxx.util.HttpDownloader;
 
 /**
  * @author papapa
@@ -35,7 +39,7 @@ public class XvideosCrawler extends AbstractCrawler{
 		String videoUrl = null;
 		Document doc;
 		try {
-			doc = HttpUtil.getDocument(viewUrl);
+			doc = HttpViewer.getRandomInstance().getResponseDoc(viewUrl);
 			if (doc == null) {
 				return null;
 			}
@@ -69,7 +73,7 @@ public class XvideosCrawler extends AbstractCrawler{
 		List<String> viewUrls = new ArrayList<>();
 		Document doc;
 		try {
-			doc = HttpUtil.getDocument(href);
+			doc = HttpViewer.getRandomInstance().getResponseDoc(href);
 			if (doc == null) {
 				return null;
 			}
@@ -122,8 +126,22 @@ public class XvideosCrawler extends AbstractCrawler{
 		Map<String,String> categories = new HashMap<>();
 		categories.put("丝袜",BASE_URL+"/c/Stockings-28");
 		categories.put("喷水",BASE_URL+"/c/Squirting-56");
-		categories.put("女同",BASE_URL+"/?k=lesbian");
+		categories.put("女同",BASE_URL+"/?k=lesbian&quality=hd");
 
 		return categories;
+	}
+
+	@Override
+	public boolean downloadVideo(String dir, String videoUrl) {
+		String fileName = StringUtils.substringAfterLast(videoUrl,"/");
+		fileName = StringUtils.substringBefore(fileName, "?");
+		String filePath = dir+File.separatorChar+fileName;
+		try {
+			new HttpDownloader().download(videoUrl, filePath);
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

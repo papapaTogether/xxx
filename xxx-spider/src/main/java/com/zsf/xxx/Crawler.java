@@ -44,4 +44,11 @@ public interface Crawler {
 	 */
 	String getVideoUrl(String viewUrl);
 
+	/**
+	 * 下载视频
+	 * @param dir 文件保存目录
+	 * @param videoUrl 视频地址
+	 * @return
+	 */
+	boolean downloadVideo(String dir,String videoUrl);
 }

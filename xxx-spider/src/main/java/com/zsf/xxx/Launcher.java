@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -25,7 +26,7 @@ public class Launcher {
 			log.info(StringUtils.join(lines,"\r\n"));			
 		}
 		log.info("爬虫开始");
-		String fileDir = System.getProperty("java.io.tmpdir");//默认文件保存目录
+		String fileDir = FileUtils.getTempDirectoryPath();//默认文件保存目录
 		if(args != null && args.length > 0){
 			fileDir = args[0];
 		}

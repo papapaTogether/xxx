@@ -1,8 +1,6 @@
 package com.zsf.xxx;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,39 +34,33 @@ public abstract class AbstractCrawler implements Crawler{
 				List<String> videoUrls = getVideoUrls(viewUrls);
 				log.info("获取所有[{}]视频地址成功:{}", title, videoUrls);
 
-				String downloadFileName = dir + File.separatorChar + "download_" + title + ".txt";
-				FileUtils.writeLines(new File(downloadFileName), videoUrls, false);
+				String downloadFileName = dir + File.separatorChar + title + File.separatorChar + "download" + ".txt";
+				FileUtils.writeLines(new File(downloadFileName),"UTF-8", videoUrls, false);
 				log.info("[{}]视频链接保存在{}",title,downloadFileName);
+				
+				log.info("开始下载[{}]下的视频",title);
+				downloadVideos(dir + File.separatorChar + title, videoUrls);
+				log.info("结束下载[{}]下的视频",title);
 			}
 		}
 	}
 
+	public void downloadVideos(String dir,List<String> videoUrls){
+		for(String videoUrl : videoUrls){
+			downloadVideo(dir,videoUrl);				
+		}
+	}
+	
 	public List<String> getVideoUrls(List<String> viewUrls) {
 		List<String> videoUrls = new ArrayList<>();
 		if (viewUrls != null && viewUrls.size() > 0) {
 			for (String viewUrl : viewUrls) {
-				videoUrls.add(getVideoUrl(viewUrl));
+				String videoUrl = getVideoUrl(viewUrl);
+				if(StringUtils.isNotBlank(videoUrl)){
+					videoUrls.add(videoUrl);
+				}
 			}
 		}
 		return videoUrls;
 	}
-
-	/**
-	 * 下载视频
-	 * 
-	 * @param videoUrl
-	 * @param dir
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 */
-	public void downloadVideo(String videoUrl, String dir) throws FileNotFoundException, IOException {
-		String fileName = StringUtils.substringBefore(videoUrl, ".mp4?");
-		fileName = StringUtils.substringAfterLast(fileName, "/");
-
-		String filePath = dir + File.separatorChar + fileName + ".mp4";
-
-		log.info("开始下载视频:{}。保存路径:{}", videoUrl, filePath);
-		HttpUtil.downloadDirect(videoUrl, new FileOutputStream(new File(filePath)));
-	}
-
 }

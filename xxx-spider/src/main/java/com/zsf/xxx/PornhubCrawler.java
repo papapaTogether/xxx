@@ -1,8 +1,5 @@
 package com.zsf.xxx;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,12 +14,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONPath;
+import com.zsf.xxx.http.HttpViewer;
 
 /**
  * @author papapa
  *
  */
-public class PornhubCrawler extends AbstractCrawler{
+public class PornhubCrawler extends AbstractCrawler {
 
 	private static final Logger log = LoggerFactory.getLogger(PornhubCrawler.class);
 
@@ -33,19 +31,12 @@ public class PornhubCrawler extends AbstractCrawler{
 	/**
 	 * 下载视频
 	 * 
-	 * @param videoUrl
 	 * @param dir
-	 * @throws IOException
-	 * @throws FileNotFoundException
+	 * @param videoUrl
 	 */
-	public void downloadVideo(String videoUrl, String dir) throws FileNotFoundException, IOException {
-		String fileName = StringUtils.substringBefore(videoUrl, ".mp4?");
-		fileName = StringUtils.substringAfterLast(fileName, "/");
-
-		String filePath = dir + File.separatorChar + fileName + ".mp4";
-		
-		log.info("开始下载视频:{}。保存路径:{}", videoUrl, filePath);
-		HttpUtil.downloadFile(videoUrl, new FileOutputStream(new File(filePath)));
+	@Override
+	public boolean downloadVideo(String dir, String videoUrl) {
+		return false;
 	}
 
 	/**
@@ -60,7 +51,7 @@ public class PornhubCrawler extends AbstractCrawler{
 		String videoUrl = null;
 		Document doc;
 		try {
-			doc = HttpUtil.getDocument(viewUrl);
+			doc = HttpViewer.getRandomInstance().getResponseDoc(viewUrl);
 			if (doc == null) {
 				return null;
 			}
@@ -88,7 +79,7 @@ public class PornhubCrawler extends AbstractCrawler{
 		List<String> viewUrls = new ArrayList<>();
 		Document doc;
 		try {
-			doc = HttpUtil.getDocument(href);
+			doc = HttpViewer.getRandomInstance().getResponseDoc(href);
 			if (doc == null) {
 				return null;
 			}
@@ -106,7 +97,7 @@ public class PornhubCrawler extends AbstractCrawler{
 				viewUrls.addAll(getViewUrls(nextPageHref));// 递规获取每一页中的播放地址
 			}
 		} catch (IOException e) {
-			log.error("获取文档对象错误:["+href+"]",e);
+			log.error("获取文档对象错误:[" + href + "]", e);
 		}
 
 		return viewUrls;
@@ -141,7 +132,7 @@ public class PornhubCrawler extends AbstractCrawler{
 		Map<String, String> result = null;
 		Document doc;
 		try {
-			doc = HttpUtil.getDocument(BASE_URL + "/categories");
+			doc = HttpViewer.getRandomInstance().getResponseDoc(BASE_URL + "/categories");
 			if (doc == null) {
 				return null;
 			}
@@ -157,10 +148,11 @@ public class PornhubCrawler extends AbstractCrawler{
 				String title = li.selectFirst("div.category-wrapper > h5 > a").attr("data-mxptext");
 				result.put(title, href);
 				log.info("分类:{},地址:{}", title, href);
-				if(result.size() > 2)break;//只获取3个
+				if (result.size() > 2)
+					break;// 只获取3个
 			}
 		} catch (IOException e) {
-			log.error("获取分类错误:",e);
+			log.error("获取分类错误:", e);
 		}
 		return result;
 	}
